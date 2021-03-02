@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import Analysis from "./Analysis.jsx";
+
 import "./basecalc.scss";
 
 const BaseCalc = () => {
@@ -109,6 +111,7 @@ const BaseCalc = () => {
           <label>cost: {results.cost}</label>
         </div>
       </div>
+      <Analysis />
     </div>
   );
 };
