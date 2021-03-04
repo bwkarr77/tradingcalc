@@ -27,17 +27,31 @@ const BaseCalc = () => {
       ...state,
       [event.target.name]: event.target.value,
     });
+
+    const modeFunds = true;
+    if (modeFunds) {
+      setResults({
+        ...results,
+        shares: state.funds / state.entry,
+      });
+    } else {
+      setResults({
+        ...results,
+        shares: 10000,
+      });
+    }
   };
 
   const submitHandler = (event) => {
     event.preventDefault();
     let entry = state.entry;
+    // console.log("BaseCalc, submitHandler: ", entry);
     setResults({
       ...results,
       shares: state.funds / entry,
-      gain: state.goal / entry,
-      loss: state.stop / entry,
       cost: state.shares * entry,
+      gain: (state.goal - entry) * results.shares,
+      loss: (entry - state.stop) * results.shares,
     });
   };
 

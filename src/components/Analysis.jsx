@@ -5,117 +5,151 @@ import "./analysis.scss";
 import Data from "./Data.jsx";
 
 const Analysis = () => {
-  const [entryData, setEntryData] = useState({
-    entries: [
-      { price: 100, shares: 20, entry_id: 1 },
-      { price: 120, shares: 40, entry_id: 2 },
-    ],
-    last_entry_id: 2,
-  });
-  const [exits, setExits] = useState([{ price: 0, shares: 0, exit_id: 1 }]);
-
   const [analysisData, setAnalysisData] = useState({
     entryData: {
       entries: [
-        { price: 11111, shares: 999, entry_id: 1 },
-        { price: 99999, shares: 2222, entry_id: 2 },
+        { price: 11111, shares: 999, id: 1 },
+        { price: 99999, shares: 2222, id: 2 },
       ],
-      last_entry_id: 2,
+      last_id: 2,
     },
     exitData: {
-      exits: [{ price: 0, shares: 0, exit_id: 1 }],
-      last_exit_id: 1,
+      exits: [{ price: 10, shares: 5, id: 1 }],
+      last_id: 1,
     },
   });
 
-  const handleChange = (e) => {
-    console.log("analysis handle: ", e.target);
+  const handleChange = (e, category, sub) => {
     const id = parseInt(e.target.id);
-    // console.log("search: ", e.target.name[e.target.name.indexOf("_") + 1]);
-    const name = `${e.target.name.slice(0, 5)}Data`;
-    const type = e.target.name[e.target.name.indexOf("_") + 1];
-    console.log("types: ", name, type);
-    // switch()
+    const name = `${e.target.name}Data`;
+    // console.log("analysis handle: ", e.target, name, category, sub);
+
     setAnalysisData({
+      // spread operator (...) copies the state again.
       ...analysisData,
+      // account for entryData or exitData
       [name]: {
-        //accounts for entryData or exitData
         ...analysisData[name],
-        entries: [
-          //HOW TO MAKE THIS ONE UNIVERSAL....???
-          ...analysisData[name].entries.map((entry) => {
-            if (id === entry.entry_id) {
-              console.log("match!!", entry);
+        [sub]: [
+          //...analysisData.entry.entries.map(
+          ...analysisData[name][sub].map((each) => {
+            // const test_id = parseInt(eac);
+            if (id === each.id) {
               return {
-                ...entry,
-                price: e.target.value,
+                ...each,
+                [category]: e.target.value,
               };
             }
-            return entry;
+            return each;
           }),
         ],
       },
     });
   };
 
-  const newEntry = (event) => {
+  const newData = (event) => {
     event.preventDefault();
-    const newEntry = {
+    const name = `${event.target.name}Data`;
+    const newId = analysisData[name].last_id + 1;
+    const type = Object.keys(analysisData[name])[0];
+
+    const newData = {
       price: 0,
       shares: 0,
-      entry_id: analysisData.entryData.last_entry_id + 1,
+      id: newId,
     };
     setAnalysisData({
       ...analysisData,
-      entryData: {
-        ...analysisData.entryData,
-        entries: [...analysisData.entryData.entries, newEntry],
+      [name]: {
+        ...analysisData[name],
+        [type]: [...analysisData[name][type], newData],
+        last_id: newId,
       },
     });
   };
-
-  // console.log("entries:", entryData.entries);
 
   return (
     <div className="analysis">
       <section className="entries-section">
         <div className="entries">
           <h3>Entries</h3>
-          {/* {entryData.entries.map((entry) => { */}
           {analysisData.entryData.entries.map((entry) => {
-            // console.log("entry: ", entry);
             return (
               <div>
-                <input
+                {/* <input
                   key={`entryPrice_${entry.id}`}
-                  id={entry.entry_id}
-                  name="entry_price"
+                  id={entry.id}
+                  name="entry"
                   type="number"
                   min="0"
                   placeholder={entry.price}
                   value={entry.price}
                   //   onChange={(e) = {handleChange(e, entry)}}
-                  onChange={handleChange}
+                  onChange={(e) => handleChange(e, "price", "entries")}
                 />
                 <input
                   key={`entryShares_${entry.id}`}
-                  name="entry_share"
+                  id={entry.id}
+                  name="entry"
                   type="number"
                   min="0"
                   placeholder={entry.shares}
                   value={entry.shares}
-                  onChange={handleChange}
+                  onChange={(e) => handleChange(e, "shares", "entries")}
+                /> */}
+                <Data
+                  data={entry}
+                  name="entry"
+                  handleChange={handleChange}
+                  type="entries"
                 />
-                {/* <Data data={entry} name="entry" handleChange={handleChange} /> */}
               </div>
             );
           })}
-          <button onClick={newEntry}>+</button>
+          <button name="entry" onClick={newData}>
+            +
+          </button>
         </div>
       </section>
       <section className="exit-section">
         <div className="exits">
           <h3>Exits</h3>
+          {analysisData.exitData.exits.map((exit) => {
+            return (
+              <div>
+                {/* <input
+                  key={`exitPrice_${exit.id}`}
+                  id={exit.id}
+                  name="exit"
+                  type="number"
+                  min="0"
+                  placeholder={exit.price}
+                  value={exit.price}
+                  //   onChange={(e) = {handleChange(e, exit)}}
+                  onChange={(e) => handleChange(e, "price", "exits")}
+                />
+                <input
+                  key={`exitShares_${exit.id}`}
+                  id={exit.id}
+                  name="exit"
+                  type="number"
+                  min="0"
+                  placeholder={exit.shares}
+                  value={exit.shares}
+                  onChange={(e) => handleChange(e, "shares", "exits")}
+                /> */}
+                <Data
+                  data={exit}
+                  name="exit"
+                  handleChange={handleChange}
+                  type="exits"
+                />
+              </div>
+            );
+          })}
+          <button name="exit" onClick={newData}>
+            +
+          </button>
         </div>
       </section>
     </div>
