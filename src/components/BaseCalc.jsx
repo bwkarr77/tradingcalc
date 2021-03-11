@@ -63,8 +63,12 @@ const BaseCalc = () => {
   return (
     <div>
       <navbar className="navbar">
-        <div className="outer-ring" onClick={toggleMode}>
-          <div className={mode ? "inner-circle" : "inner-circle toggled"} />
+        <div className="trade-type">
+          shares
+          <div className="outer-ring" onClick={toggleMode}>
+            <div className={mode ? "inner-circle" : "inner-circle toggled"} />
+          </div>
+          funds
         </div>
       </navbar>
       <div className="basic-calculator">
