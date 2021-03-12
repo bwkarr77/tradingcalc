@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 
 import { StateContext } from "../../contexts/StateContext.jsx";
 
-const FundsResults = () => {
+const SharesResults = () => {
   const { state, results } = useContext(StateContext);
 
   const { goal, entry, stop } = state;
@@ -10,8 +10,8 @@ const FundsResults = () => {
 
   return (
     <div className="results">
-      <label>shares: {shares}</label>
-      {/* <label>cost: {cost}</label> */}
+      {/* <label>shares: {shares}</label> */}
+      <label>cost: {cost}</label>
       <label>risk ratio: {(goal - entry) / (entry - stop)} : 1</label>
       <label>gain: {gain}</label>
       <label>loss: {loss}</label>
@@ -19,4 +19,4 @@ const FundsResults = () => {
   );
 };
 
-export default FundsResults;
+export default SharesResults;

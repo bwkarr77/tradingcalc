@@ -9,9 +9,12 @@ import BaseCalc from "./components/BaseCalc.jsx";
 import FundsCalc from './components/calculators/FundsCalc';
 import SharesCalc from './components/calculators/SharesCalc';
 import FundsResults from './components/calculators/FundsResults';
+import SharesResults from './components/calculators/SharesResults';
+
+import Analysis from './components/Analysis.jsx';
 
 const App = () => {
-  const [tradeMode, setTradeMode] = useState(false);
+  const [tradeShares, setTradeShares] = useState(false);
 
   const [state, setState] = useState({
     funds: 1000,
@@ -19,25 +22,28 @@ const App = () => {
     entry: 10,
     stop: 9,
     goal: 12,
+    edited: true
   });
 
   const [results, setResults] = useState({
-    cost: 1000,
-    shares: 30,
+    cost: 0,
+    shares: 0,
     gain: 0,
     loss: 0,
+    ratio: 0
   });
 
   const stateHandler = (event) => {
     setState({
       ...state,
       [event.target.name]: event.target.value,
+      edited: true
     });
   };
   const submitHandler = (event) => {
     event.preventDefault();
     let entry = state.entry;
-    console.log("BaseCalc, submitHandler: ", entry);
+
     setResults({
       ...results,
       shares: state.funds / entry,
@@ -49,9 +55,10 @@ const App = () => {
 
   const toggleMode = (event) => {
     event.preventDefault();
-    setTradeMode(!tradeMode);
+    setTradeShares(!tradeShares);
   };
 
+  console.log(tradeShares)
   return (
     <div className="App">
       {" "}
@@ -60,19 +67,20 @@ const App = () => {
           shares
           <div className="outer-ring" onClick={toggleMode}>
             <div
-              className={tradeMode ? "inner-circle" : "inner-circle toggled"}
+              className={tradeShares ? "inner-circle" : "inner-circle toggled"}
             />
           </div>
           funds
         </div>
       </navbar>
       <div className="calculator-container">
-        <StateContext.Provider value={{ state, stateHandler, submitHandler }}>
-          <BaseCalc />
-          {tradeMode ? <FundsCalc /> : <SharesCalc />}
-          <FundsResults />
+        <StateContext.Provider value={{ state, results, stateHandler, submitHandler }}>
+          {/* <BaseCalc /> */}
+          {tradeShares ? <FundsCalc /> : <SharesCalc />}
+          {tradeShares ? <FundsResults /> : <SharesResults />}
         </StateContext.Provider>
       </div>
+      <Analysis />
     </div>
   );
 };
